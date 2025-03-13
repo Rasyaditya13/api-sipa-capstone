@@ -19,7 +19,7 @@ const StatusPengaduan = db.define(
       type: DataTypes.TEXT,
       allowNull: false,
     },
-  },~~~~~~
+  },
   {
     freezeTableName: true, 
     timestamps: false,
