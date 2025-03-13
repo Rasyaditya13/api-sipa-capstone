@@ -22,7 +22,7 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { nama, password } = req.body; /
+    const { nama, password } = req.body; 
     
     const user = await User.findOne({ where: { nama } });
     if (!user) {
@@ -38,9 +38,9 @@ export const login = async (req, res) => {
 
     let redirectPage = "/";
     if (userRole === "tamu") {
-      redirectPage = "/dashboard-tamu";
+      redirectPage = "/beranda";
     } else if (userRole === "admin") {
-      redirectPage = "/dashboard-admin";
+      redirectPage = "/page-admin";
     }
 
     return res.status(200).json({
