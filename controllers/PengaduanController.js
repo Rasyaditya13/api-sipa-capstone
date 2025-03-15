@@ -1,31 +1,42 @@
 import Pengaduan from "../models/pengaduan.js";
 import StatusPengaduan from "../models/status_pengaduan.js";
+import db from "../config/database.js";
 import { nanoid } from "nanoid";
 
 export const createPengaduan = async (req, res) => {
+    const transaction = await db.transaction();
+
     try {
-        const { lokasi, kronologi, bukti } = req.body;
+        const { tanggal, lokasi, kronologi, bukti } = req.body;
+        const randomCode = nanoid(10);
+        const formatTanggal = tanggal ? new Date(tanggal).toISOString().split("T")[0] : null;
 
         const newStatus = await StatusPengaduan.create({
             status: "antre",
             keterangan: "",
-        });
+        }, { transaction });
 
-        const randomCode = nanoid(10);
         const newPengaduan = await Pengaduan.create({
             kode: randomCode,
+            tanggal: formatTanggal,
             lokasi,
             kronologi,
             bukti,
             status_pengaduan_id: newStatus.id, 
+        }, { transaction });
+
+        await transaction.commit();
+
+        res.status(201).json({
+            pengaduan: newPengaduan,
+            status_pengaduan: newStatus,
         });
 
-        res.status(201).json(newPengaduan);
     } catch (error) {
+        await transaction.rollback(); 
         res.status(500).json({ error: error.message });
     }
 };
-
 
 export const getPengaduan = async (req, res) => {
     try {

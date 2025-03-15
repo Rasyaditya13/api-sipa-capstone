@@ -16,6 +16,10 @@ const Pengaduan = db.define(
       allowNull: false,
       unique: true,
     },
+      tanggal: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
     lokasi: {
       type: DataTypes.STRING,
       allowNull: false,
