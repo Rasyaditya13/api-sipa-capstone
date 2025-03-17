@@ -3,8 +3,8 @@ import bcrypt from "bcryptjs";
 
 export const register = async (req, res) => {
   try {
-    const { nama, password } = req.body;
-    const existingUser = await User.findOne({ where: { nama } });
+    const { nama, email, password } = req.body;
+    const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ error: "Nama sudah digunakan" });
     }
@@ -12,9 +12,14 @@ export const register = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    const user = await User.create({ nama, password: hashedPassword });
+    const user = await User.create({ nama, email, password: hashedPassword });
 
-    res.status(201).json({ id: user.id, nama: user.nama, role: user.role });
+    res.status(201).json({ 
+      id: user.id, 
+      nama: user.nama,
+      email: user.email,
+      password: user.password, 
+      role: user.role });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -22,9 +27,9 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
   try {
-    const { nama, password } = req.body; 
-    
-    const user = await User.findOne({ where: { nama } });
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       return res.status(401).json({ error: "Username atau password salah" });
     }
@@ -47,12 +52,12 @@ export const login = async (req, res) => {
       message: "Login berhasil",
       user: {
         id: user.id,
-        nama: user.nama,
+        email: user.email,
+        password: user.password,
         role: userRole,
       },
       redirectPage: redirectPage,
     });
-
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
