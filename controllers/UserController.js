@@ -62,3 +62,16 @@ export const login = async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 };
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+    res.status(200).json({ message: "Reset password berhasil" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+}

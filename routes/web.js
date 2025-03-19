@@ -1,6 +1,6 @@
 import express from "express";
 
-import {register, login} from "../controllers/UserController.js";
+import {register, login, forgotPassword} from "../controllers/UserController.js";
 import {createPengaduan, getPengaduan, cekpengaduan,updateStatusPengaduan} from "../controllers/PengaduanController.js";
 import { getDataKekerasan } from "../controllers/beritaController.js";
 
@@ -9,6 +9,7 @@ const router = express.Router();
 //user
 router.post("/register", register);
 router.post("/login", login);
+router.put("/forgot-password", forgotPassword);
 
 //pengaduan
 router.post("/pengaduan", createPengaduan);
