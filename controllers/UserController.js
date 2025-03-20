@@ -3,25 +3,24 @@ import bcrypt from "bcryptjs";
 
 export const register = async (req, res) => {
   try {
-    const { nama, email, password } = req.body;
+    const { nama, email, password, confirmPassword } = req.body;
     const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res.status(400).json({ error: "Nama sudah digunakan" });
-    }
 
+    if (existingUser) {
+      return res.status(400).json({ error: "Email sudah terdaftar" });
+    }
+    if (password !== confirmPassword) {
+      return res
+        .status(400)
+        .json({ error: "Password dan konfirmasi password harus sama" });
+    }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const user = await User.create({ nama, email, password: hashedPassword });
-
-    res.status(201).json({ 
-      id: user.id, 
-      nama: user.nama,
-      email: user.email,
-      password: user.password, 
-      role: user.role });
+    res.status(201).json({ message: "Pendaftaran berhasil", user });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 
@@ -41,12 +40,11 @@ export const login = async (req, res) => {
 
     const userRole = user.role;
 
-    let redirectPage = "/";
-    if (userRole === "tamu") {
-      redirectPage = "/beranda";
-    } else if (userRole === "admin") {
-      redirectPage = "/page-admin";
-    }
+    const roleRedirect = {
+      tamu: "/beranda",
+      petugas: "/page-admin",
+    };
+    let redirectPage = roleRedirect[userRole] || "/";
 
     return res.status(200).json({
       message: "Login berhasil",
@@ -65,13 +63,23 @@ export const login = async (req, res) => {
 
 export const forgotPassword = async (req, res) => {
   try {
-    const { email } = req.body;
+    const { email, newPassword, confirmPassword } = req.body;
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(404).json({ error: "User tidak ditemukan" });
+      return res.status(404).json({ error: "Email tidak ditemukan" });
     }
-    res.status(200).json({ message: "Reset password berhasil" });
+    if (newPassword !== confirmPassword) {
+      return res
+        .status(400)
+        .json({ error: "Password dan Konfirmasi Password harus sama" });
+    }
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+    await user.save();
+    res.status(200).json({ message: "Password berhasil diubah" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
-}
+};
