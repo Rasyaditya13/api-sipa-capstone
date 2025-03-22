@@ -43,7 +43,7 @@ export const login = async (req, res) => {
 
     const roleRedirect = {
       tamu: "/",
-      petugas: "/dashboard",
+      admin: "/dashboard",
     };
     let redirectPage = roleRedirect[userRole];
 
