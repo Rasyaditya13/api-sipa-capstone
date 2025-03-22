@@ -42,10 +42,10 @@ export const login = async (req, res) => {
     const userRole = user.role;
 
     const roleRedirect = {
-      tamu: "/beranda",
-      petugas: "/page-admin",
+      tamu: "/",
+      petugas: "/dashboard",
     };
-    let redirectPage = roleRedirect[userRole] || "/";
+    let redirectPage = roleRedirect[userRole];
 
 
     const token = jwt.sign (
