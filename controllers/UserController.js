@@ -47,19 +47,12 @@ export const login = async (req, res) => {
     };
     let redirectPage = roleRedirect[userRole] || "/";
 
-<<<<<<< HEAD
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: userRole },
-      "your-secret-key",
-      { expiresIn: "1h" }
-    );
-=======
+
     const token = jwt.sign (
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
-    ); 
->>>>>>> d7b996a7f2a7bca59e79e3a1b029ab006725fb0c
+    );
 
     return res.status(200).json({
       message: "Login berhasil",
