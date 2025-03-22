@@ -1,5 +1,6 @@
 import User from "../models/users.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 export const register = async (req, res) => {
   try {
@@ -46,6 +47,12 @@ export const login = async (req, res) => {
     };
     let redirectPage = roleRedirect[userRole] || "/";
 
+    const token = jwt.sign (
+      { id: user.id, email: user.email, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    ); 
+
     return res.status(200).json({
       message: "Login berhasil",
       user: {
@@ -54,6 +61,7 @@ export const login = async (req, res) => {
         password: user.password,
         role: userRole,
       },
+      token: token,
       redirectPage: redirectPage,
     });
   } catch (error) {
