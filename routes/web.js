@@ -16,8 +16,8 @@ router.put("/forgot-password", forgotPassword);
 router.get("/data-pengaduan", verifyToken, authorize(["admin"]), getPengaduan); 
 router.put("/pengaduan/:id", verifyToken, authorize(["admin"]), updateStatusPengaduan);
 
-router.get("/cek-pengaduan", verifyToken, authorize(["tamu"]), cekpengaduan);
-router.post("/pengaduan", verifyToken, authorize(["tamu"]), createPengaduan);
+router.get("/cek-pengaduan", cekpengaduan);
+router.post("/pengaduan",  createPengaduan);
 
 //berita
 router.get("/data-kekerasan",getDataKekerasan )
