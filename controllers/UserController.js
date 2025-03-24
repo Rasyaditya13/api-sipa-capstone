@@ -31,22 +31,13 @@ export const login = async (req, res) => {
 
     const user = await User.findOne({ where: { email } });
     if (!user) {
-      return res.status(401).json({ error: "Username atau password salah" });
+      return res.status(401).json({ error: "Email atau password salah" });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return res.status(401).json({ error: "Username atau password salah" });
+      return res.status(401).json({ error: "Email atau password salah" });
     }
-
-    const userRole = user.role;
-
-    const roleRedirect = {
-      tamu: "/",
-      admin: "/dashboard",
-    };
-    let redirectPage = roleRedirect[userRole];
-
 
     const token = jwt.sign (
       { id: user.id, email: user.email, role: user.role },
@@ -54,17 +45,14 @@ export const login = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    return res.status(200).json({
+    res.status(200).json({
       message: "Login berhasil",
       user: {
         id: user.id,
         email: user.email,
-        password: user.password,
-        token: token,
-        role: userRole,
+        role: user.role,
       },
       token: token,
-      redirectPage: redirectPage,
     });
   } catch (error) {
     return res.status(500).json({ error: error.message });
