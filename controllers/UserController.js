@@ -39,7 +39,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ error: "Email atau password salah" });
     }
 
-    const token = jwt.sign(
+    const token = jwt.sign (
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
