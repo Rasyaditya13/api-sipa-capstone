@@ -13,8 +13,8 @@ router.post("/login", login);
 router.put("/forgot-password", forgotPassword);
 
 //pengaduan
-router.get("/data-pengaduan", verifyToken, authorize(["admin"]), getPengaduan); 
-router.put("/pengaduan/:id", verifyToken, authorize(["admin"]), updateStatusPengaduan);
+router.get("/data-pengaduan", getPengaduan); 
+router.put("/pengaduan/:id", updateStatusPengaduan);
 
 router.get("/cek-pengaduan", cekpengaduan);
 router.post("/pengaduan",  createPengaduan);
