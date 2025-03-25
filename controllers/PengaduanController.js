@@ -7,9 +7,9 @@ export const createPengaduan = async (req, res) => {
     const transaction = await db.transaction();
 
     try {
-        const { tanggal, lokasi, kronologi, bukti } = req.body;
+        const { tanggal,umur, gender, lokasi, kronologi, bukti } = req.body;
         const randomCode = nanoid(10);
-        const formatTanggal = tanggal ? new Date(tanggal).toISOString().split("T")[0] : null;
+        const formatTanggal = tanggal ? new Date(tanggal).toISOString().split("T")[0] : new Date().toISOString().split("T")[0];
 
         const newStatus = await StatusPengaduan.create({
             status: "antre",
@@ -19,6 +19,8 @@ export const createPengaduan = async (req, res) => {
         const newPengaduan = await Pengaduan.create({
             kode: randomCode,
             tanggal: formatTanggal,
+            umur,
+            gender,
             lokasi,
             kronologi,
             bukti,
@@ -37,6 +39,7 @@ export const createPengaduan = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 export const getPengaduan = async (req, res) => {
     try {
