@@ -16,10 +16,18 @@ const Pengaduan = db.define(
       allowNull: false,
       unique: true,
     },
-      tanggal: {
-        type: DataTypes.DATE,
-        allowNull: true,
-      },
+    tanggal: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+    umur: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    gender: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
     lokasi: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -42,7 +50,7 @@ const Pengaduan = db.define(
     },
   },
   {
-    freezeTableName: true, 
+    freezeTableName: true,
     timestamps: false,
   }
 );
