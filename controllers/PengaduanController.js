@@ -81,7 +81,7 @@ export const updateStatusPengaduan = async (req, res) => {
 
 export const cekpengaduan = async (req, res) => {
     try {
-        const { kode } = req.body;
+        const { kode } = req.params;
         const pengaduan = await Pengaduan.findOne({
             where: { kode },
             include: [
@@ -90,7 +90,7 @@ export const cekpengaduan = async (req, res) => {
                     attributes: ["status", "keterangan"],
                 },
             ],
-        });
+        });``
         res.status(200).json(pengaduan);
     } catch (error) {
         res.status(500).json({ error: error.message });

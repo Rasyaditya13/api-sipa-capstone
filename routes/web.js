@@ -16,7 +16,7 @@ router.put("/forgot-password", forgotPassword);
 router.get("/data-pengaduan", getPengaduan); 
 router.put("/pengaduan/:id", updateStatusPengaduan);
 
-router.get("/cek-pengaduan", cekpengaduan);
+router.get("/cek-pengaduan/:kode", cekpengaduan);
 router.post("/pengaduan", createPengaduan);
 
 //berita
