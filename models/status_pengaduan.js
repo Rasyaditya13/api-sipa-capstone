@@ -1,4 +1,4 @@
-import { DataTypes } from "sequelize";
+import { DataTypes, Sequelize } from "sequelize";
 import db from "../config/database.js";
 
 const StatusPengaduan = db.define(
@@ -13,16 +13,26 @@ const StatusPengaduan = db.define(
     status: {
       type: DataTypes.STRING,
       allowNull: false,
-      defaultValue: "antre", 
+      defaultValue: "antre",
     },
     keterangan: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    updateAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: Sequelize.NOW,
+    },
   },
   {
-    freezeTableName: true, 
+    freezeTableName: true,
     timestamps: false,
+    hooks: {
+      beforeUpdate: (statusPengaduan) => {
+        statusPengaduan.updateAt = new Date(); 
+      },
+    },
   }
 );
 
