@@ -70,6 +70,7 @@ export const updateStatusPengaduan = async (req, res) => {
 
         statusPengaduan.status = status;
         statusPengaduan.keterangan = keterangan;
+        statusPengaduan.updateAt = new Date();
         await statusPengaduan.save();
 
         res.status(200).json(statusPengaduan);
@@ -90,7 +91,7 @@ export const cekpengaduan = async (req, res) => {
                     attributes: ["status", "keterangan"],
                 },
             ],
-        });``
+        });
         res.status(200).json(pengaduan);
     } catch (error) {
         res.status(500).json({ error: error.message });
