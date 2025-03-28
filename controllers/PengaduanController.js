@@ -47,7 +47,7 @@ export const getPengaduan = async (req, res) => {
             include: [
                 {
                     model: StatusPengaduan,
-                    attributes: ["status", "keterangan"],
+                    attributes: ["status", "keterangan","updateAt"],
                 },
             ],
         });
