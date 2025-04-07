@@ -39,7 +39,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ error: "Email atau password salah" });
     }
 
-    const token = jwt.sign (
+    const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
@@ -77,6 +77,64 @@ export const forgotPassword = async (req, res) => {
     user.password = hashedPassword;
     await user.save();
     res.status(200).json({ message: "Password berhasil diubah" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getUser = async (req, res) => {
+  try {
+    const users = await User.findAll();
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const getUserById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const updateUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { nama, email, password } = req.body;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    user.nama = nama;
+    user.email = email;
+    user.password = hashedPassword;
+    await user.save();
+    res.status(200).json({ message: "Profile berhasil diupdate", user });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+    await user.destroy();
+    res.status(200).json({ message: "User berhasil dihapus" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
