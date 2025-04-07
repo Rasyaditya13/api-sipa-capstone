@@ -39,7 +39,7 @@ export const login = async (req, res) => {
       return res.status(401).json({ error: "Email atau password salah" });
     }
 
-    const token = jwt.sign (
+    const token = jwt.sign(
       { id: user.id, email: user.email, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
@@ -82,25 +82,23 @@ export const forgotPassword = async (req, res) => {
   }
 };
 
-export const getProfile = async (req, res) => {
+export const getUser = async (req, res) => {
   try {
-    const user = await User.findByPk(req.user.id, {
-      attributes: ["id", "nama", "email", "role"],
-    });
-    if (!user) return res.status(404).json({ error: "User tidak ditemukan" });
-
-    res.status(200).json({ user });
+    const users = await User.findAll();
+    res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 };
 
-export const getAllUsers = async (req, res) => {
+export const getUserById = async (req, res) => {
   try {
-    const users = await User.findAll({
-      attributes: ["id", "nama", "email", "role", "createdAt"],
-    });
-    res.status(200).json({ users });
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+    res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -108,16 +106,21 @@ export const getAllUsers = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
-    const { nama, email, role } = req.body;
-    const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ error: "User tidak ditemukan" });
+    const { id } = req.params;
+    const { nama, email, password } = req.body;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
 
-    user.nama = nama || user.nama;
-    user.email = email || user.email;
-    user.role = role || user.role;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    user.nama = nama;
+    user.email = email;
+    user.password = hashedPassword;
     await user.save();
-
-    res.status(200).json({ message: "User berhasil diupdate", user });
+    res.status(200).json({ message: "Profile berhasil diupdate", user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -125,9 +128,11 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    const user = await User.findByPk(req.params.id);
-    if (!user) return res.status(404).json({ error: "User tidak ditemukan" });
-
+    const { id } = req.params;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
     await user.destroy();
     res.status(200).json({ message: "User berhasil dihapus" });
   } catch (error) {
