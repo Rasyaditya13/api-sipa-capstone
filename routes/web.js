@@ -1,6 +1,6 @@
 import express from "express";
 
-import {register, login, forgotPassword, getUser, getUserById, updateUser, deleteUser} from "../controllers/UserController.js";
+import {register, login, forgotPassword, getUser, getUserById, updateUser, deleteUser, updateUserRole} from "../controllers/UserController.js";
 import {createPengaduan, getPengaduan, cekpengaduan,updateStatusPengaduan} from "../controllers/PengaduanController.js";
 import { getDataKekerasan, getArtikelKekerasan } from "../controllers/beritaController.js";
 // import { verifyToken, authorize } from "./middleware/middleware.js";
@@ -15,6 +15,7 @@ router.get("/users", getUser);
 router.get("/users/:id", getUserById); 
 router.put("/users/:id", updateUser);
 router.delete("/users/:id", deleteUser);  
+router.put("/edit-role/:id", updateUserRole);
 
 //pengaduan
 router.get("/data-pengaduan", getPengaduan); 
@@ -26,5 +27,6 @@ router.post("/pengaduan", createPengaduan);
 //berita
 router.get("/data-kekerasan",getDataKekerasan );
 router.get("/artikel", getArtikelKekerasan);
+
 
 export default router;
