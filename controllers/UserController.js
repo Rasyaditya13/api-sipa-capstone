@@ -98,6 +98,8 @@ export const getUserById = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User tidak ditemukan" });
     }
+
+    
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: error.message });
@@ -135,6 +137,23 @@ export const deleteUser = async (req, res) => {
     }
     await user.destroy();
     res.status(200).json({ message: "User berhasil dihapus" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const updateUserRole = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { role } = req.body;
+    const user = await User.findByPk(id);
+    if (!user) {
+      return res.status(404).json({ error: "User tidak ditemukan" });
+    }
+
+    user.role = role;
+    await user.save();
+    res.status(200).json({ message: "Role berhasil diupdate", user });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
