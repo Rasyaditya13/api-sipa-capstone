@@ -5,6 +5,7 @@ import {createPengaduan, getPengaduan, cekpengaduan,updateStatusPengaduan} from 
 import { getDataKekerasan, getArtikelKekerasan } from "../controllers/beritaController.js";
 // import { verifyToken, authorize } from "./middleware/middleware.js";
 
+import axios from "axios";
 const router = express.Router();
 
 //user
@@ -27,6 +28,24 @@ router.post("/pengaduan", createPengaduan);
 //berita
 router.get("/data-kekerasan",getDataKekerasan );
 router.get("/artikel", getArtikelKekerasan);
+
+router.post("/ask", async (req, res) => {
+    try {
+      const { question } = req.body;
+  
+      const response = await axios.post(
+        "https://sipa-chat-production.up.railway.app/ask",
+        {
+          question: question,
+        }
+      );
+  
+      res.json(response.data);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ error: "Gagal memproses permintaan ke AI service" });
+    }
+  });
 
 
 export default router;
